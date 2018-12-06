@@ -14,6 +14,7 @@ type Assert struct {
 	*testing.T
 }
 
+// Nil asserts the actual value is nil.
 func (a *Assert) Nil(actual interface{}, logs ...interface{}) {
 	if !IsNil(actual) {
 		logCaller()
@@ -22,6 +23,7 @@ func (a *Assert) Nil(actual interface{}, logs ...interface{}) {
 	}
 }
 
+// NotNil asserts the actual value is not nil.
 func (a *Assert) NotNil(actual interface{}, logs ...interface{}) {
 	if IsNil(actual) {
 		logCaller()
@@ -30,6 +32,8 @@ func (a *Assert) NotNil(actual interface{}, logs ...interface{}) {
 	}
 }
 
+// True asserts the actual value is semantics match true.
+//  it match: 1, "1", "t", "T", "true", "TRUE", "True"
 func (a *Assert) True(actual interface{}, logs ...interface{}) {
 	if !IsBoolMatch(true, actual) {
 		logCaller()
@@ -38,6 +42,8 @@ func (a *Assert) True(actual interface{}, logs ...interface{}) {
 	}
 }
 
+// False asserts the actual value is semantics match false.
+//  it match: 0, "0", "f", "F", "false", "FALSE", "False"
 func (a *Assert) False(actual interface{}, logs ...interface{}) {
 	if !IsBoolMatch(false, actual) {
 		logCaller()
@@ -46,6 +52,7 @@ func (a *Assert) False(actual interface{}, logs ...interface{}) {
 	}
 }
 
+// Bool asserts the actual value is semantics match expect boolean.
 func (a *Assert) Bool(expect bool, actual interface{}, logs ...interface{}) {
 	if !IsBoolMatch(expect, actual) {
 		logCaller()
@@ -54,6 +61,7 @@ func (a *Assert) Bool(expect bool, actual interface{}, logs ...interface{}) {
 	}
 }
 
+// Equal asserts the actual value euqals to the expect value.
 func (a *Assert) Equal(expect, actual interface{}, logs ...interface{}) {
 	if !IsEqual(expect, actual) {
 		logCaller()
@@ -62,6 +70,7 @@ func (a *Assert) Equal(expect, actual interface{}, logs ...interface{}) {
 	}
 }
 
+// Equal asserts the actual value not euqals to the expect value.
 func (a *Assert) NotEqual(expect, actual interface{}, logs ...interface{}) {
 	if IsEqual(expect, actual) {
 		logCaller()
@@ -70,6 +79,8 @@ func (a *Assert) NotEqual(expect, actual interface{}, logs ...interface{}) {
 	}
 }
 
+// Contains asserts that the specified string, list(array, slice...) or map contains the
+// specified substring or element.
 func (a *Assert) Contains(list, element interface{}, logs ...interface{}) {
 	if ok, found := IncludeElement(list, element); !ok || !found {
 		logCaller()
@@ -78,6 +89,8 @@ func (a *Assert) Contains(list, element interface{}, logs ...interface{}) {
 	}
 }
 
+// NotContains asserts that the specified string, list(array, slice...) or map does NOT contain the
+// specified substring or element.
 func (a *Assert) NotContains(list, element interface{}, logs ...interface{}) {
 	if ok, found := IncludeElement(list, element); !ok || found {
 		logCaller()
