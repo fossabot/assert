@@ -12,6 +12,7 @@ import (
 
 type Assert struct {
 	*testing.T
+	goon bool
 }
 
 // Nil asserts the actual value is nil.
@@ -19,7 +20,7 @@ func (a *Assert) Nil(actual interface{}, logs ...interface{}) {
 	if !IsNil(actual) {
 		logCaller()
 		fmt.Printf("expect nil, got %#v. %s\n", actual, fmt.Sprint(logs...))
-		a.FailNow()
+		a.failNow()
 	}
 }
 
@@ -28,36 +29,38 @@ func (a *Assert) NotNil(actual interface{}, logs ...interface{}) {
 	if IsNil(actual) {
 		logCaller()
 		fmt.Println("expect value not to be nil.")
-		a.FailNow()
+		a.failNow()
 	}
 }
 
 // True asserts the actual value is semantics match true.
-//  it match: 1, "1", "t", "T", "true", "TRUE", "True"
+//  it match: true, 1, "1", "t", "T", "true", "TRUE", "True"
 func (a *Assert) True(actual interface{}, logs ...interface{}) {
 	if !IsBoolMatch(true, actual) {
 		logCaller()
 		fmt.Printf("expect value is not match true %#v. %s\n", actual, fmt.Sprint(logs...))
-		a.FailNow()
+		a.failNow()
 	}
 }
 
 // False asserts the actual value is semantics match false.
-//  it match: 0, "0", "f", "F", "false", "FALSE", "False"
+//  it match: false, 0, "0", "f", "F", "false", "FALSE", "False"
 func (a *Assert) False(actual interface{}, logs ...interface{}) {
 	if !IsBoolMatch(false, actual) {
 		logCaller()
 		fmt.Printf("expect value is not match false %#v. %s\n", actual, fmt.Sprint(logs...))
-		a.FailNow()
+		a.failNow()
 	}
 }
 
 // Bool asserts the actual value is semantics match expect boolean.
+//  true: 1, "1", "t", "T", "true", "TRUE", "True"
+//  false: 0, "0", "f", "F", "false", "FALSE", "False"
 func (a *Assert) Bool(expect bool, actual interface{}, logs ...interface{}) {
 	if !IsBoolMatch(expect, actual) {
 		logCaller()
 		fmt.Printf("expect boolean value is not equal %#v. %s\n", actual, fmt.Sprint(logs...))
-		a.FailNow()
+		a.failNow()
 	}
 }
 
@@ -66,7 +69,7 @@ func (a *Assert) Equal(expect, actual interface{}, logs ...interface{}) {
 	if !IsEqual(expect, actual) {
 		logCaller()
 		fmt.Printf("expect value is not equal %#v. %s\n", actual, fmt.Sprint(logs...))
-		a.FailNow()
+		a.failNow()
 	}
 }
 
@@ -75,7 +78,7 @@ func (a *Assert) NotEqual(expect, actual interface{}, logs ...interface{}) {
 	if IsEqual(expect, actual) {
 		logCaller()
 		fmt.Println("expect value is equal to actual.")
-		a.FailNow()
+		a.failNow()
 	}
 }
 
@@ -85,7 +88,7 @@ func (a *Assert) Contains(list, element interface{}, logs ...interface{}) {
 	if ok, found := IncludeElement(list, element); !ok || !found {
 		logCaller()
 		fmt.Printf("expect list is not contains %#v. %s\n", element, fmt.Sprint(logs...))
-		a.FailNow()
+		a.failNow()
 	}
 }
 
@@ -95,16 +98,32 @@ func (a *Assert) NotContains(list, element interface{}, logs ...interface{}) {
 	if ok, found := IncludeElement(list, element); !ok || found {
 		logCaller()
 		fmt.Printf("expect list is contains %#v. %s\n", element, fmt.Sprint(logs...))
+		a.failNow()
+	}
+}
+
+func (a *Assert) failNow() {
+	if a.goon {
+		a.Fail()
+	} else {
 		a.FailNow()
 	}
 }
 
 // New return a pointer of new Assert struct value
-func New(t *testing.T) *Assert {
+//  set 'goon' to decide whether to continue testing, default: false
+func New(t *testing.T, goon ...bool) *Assert {
 	if nil == t {
 		return nil
 	}
-	return &Assert{t}
+	var b bool
+	if len(goon) > 0 {
+		b = goon[0]
+	}
+	return &Assert{
+		T:    t,
+		goon: b,
+	}
 }
 
 // IsNil checks if a specified object is nil

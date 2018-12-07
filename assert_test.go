@@ -15,6 +15,13 @@ func TestNew(t *testing.T) {
 	}
 }
 
+func TestNew2(t *testing.T) {
+	a := New(t, true)
+	a.Nil(&struct{}{}) // assert fail, but will continue testing
+	a.Log("continue testing")
+	a.NotNil(t)
+}
+
 func TestAssertNil(t *testing.T) {
 	New(t).Nil(nil, "check nil input")
 }
