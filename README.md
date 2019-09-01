@@ -1,4 +1,6 @@
 # Assert library for Go.
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fyougg%2Fassert.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fyougg%2Fassert?ref=badge_shield)
+
 
 ## Installation
 
@@ -50,3 +52,6 @@
 		a.NotContains(list, element, "the list should not contains element")
 	}
 	```
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fyougg%2Fassert.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fyougg%2Fassert?ref=badge_large)
